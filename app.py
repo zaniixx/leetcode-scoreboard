@@ -19,6 +19,7 @@ admin_dashboard_route = config['routing']['admin_dashboard']
 admin_login_route = config['routing']['admin_login']
 admin_logout_route = config['routing']['admin_logout']
 set_end_time_route = config['routing']['set_end_time']
+set_start_time_route = config['routing']['set_start_time']
 user_profile_route = config['routing']['user_profile']
 add_user_route = config['routing']['add_user']
 
@@ -43,10 +44,15 @@ def index():
     # Get competition end time
     end_time_query = "SELECT end_time FROM settings LIMIT 1"
     end_time_row = conn.execute(end_time_query).fetchone()
-    end_time = end_time_row['end_time'] if end_time_row else 'Competition End Time Not Set'
+    
+    if end_time_row:
+        end_time = end_time_row['end_time']
+    else:
+        end_time = None
     
     conn.close()
     return render_template('index.html', users=users, end_time=end_time)
+
 
 @app.route(admin_login_route, methods=['GET', 'POST'])
 def admin_login():
@@ -68,21 +74,31 @@ def admin_logout():
 def admin_dashboard():
     if not session.get('logged_in'):
         return redirect(admin_login_route)
-    return render_template('admin_dashboard.html')
+    
+    conn = get_db_connection()
+    users_query = """
+    SELECT id, username, avatar FROM users
+    """
+    users = conn.execute(users_query).fetchall()
+    conn.close()
+    
+    return render_template('admin_dashboard.html', users=users)
 
 @app.route(set_end_time_route, methods=['POST'])
 def set_end_time():
     if not session.get('logged_in'):
         return redirect(admin_login_route)
     
-    if request.method == 'POST':
-        end_time = request.form['end_time']
-        conn = get_db_connection()
-        conn.execute("DELETE FROM settings")  # Clear existing setting
-        conn.execute("INSERT INTO settings (end_time) VALUES (?)", (end_time,))
-        conn.commit()
-        conn.close()
-        return redirect(admin_dashboard_route)
+    end_time = request.form['end_time']
+    start_time = request.form['start_time']
+    
+    conn = get_db_connection()
+    conn.execute("DELETE FROM settings")  # Clear existing settings
+    conn.execute("INSERT INTO settings (end_time, start_time) VALUES (?, ?)", (end_time, start_time))
+    conn.commit()
+    conn.close()
+    return redirect(admin_dashboard_route)
+
 
 
 @app.route('/user/<username>', methods=['GET'])
@@ -119,6 +135,32 @@ def add_user():
             return redirect('/')
     return render_template('add_user.html')
 
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if not session.get('logged_in'):
+        return redirect(admin_login_route)
+    
+    conn = get_db_connection()
+    conn.execute('DELETE FROM users WHERE id = ?', (user_id,))
+    conn.execute('DELETE FROM submissions WHERE user_id = ?', (user_id,))
+    conn.commit()
+    conn.close()
+    
+    return redirect(admin_dashboard_route)
+
+@app.route('/delete_all_submissions', methods=['POST'])
+def delete_all_submissions():
+    if not session.get('logged_in'):
+        return redirect(admin_login_route)
+    
+    conn = get_db_connection()
+    conn.execute("DELETE FROM submissions")
+    conn.commit()
+    conn.close()
+    
+    return redirect(admin_dashboard_route)
+
+
 def runDB(username):
     SUBurl = f"http://localhost:3000/{username}/acSubmission"
     PROFurl = f"http://localhost:3000/{username}"
@@ -131,6 +173,23 @@ def runDB(username):
             print(f"Username: {submission['username']}, Title: {submission['title']}, Timestamp: {submission['timestamp']}, Language: {submission['lang']}")
     else:
         print("No new submissions found or user not found.")
+
+@app.route('/refresh_all_users')
+def refresh_all_users():
+    conn = get_db_connection()
+    users_query = "SELECT username FROM users"
+    users = conn.execute(users_query).fetchall()
+    conn.close()
+
+    for user in users:
+        username = user['username']
+        SUBurl = f"http://localhost:3000/{username}/acSubmission"
+        PROFurl = f"http://localhost:3000/{username}"
+        
+        fetch_and_store_interests(SUBurl, PROFurl, username)
+
+    return redirect('/')
+
 
 def fetch_and_store_interests(SUBurl, PROFurl, username):
     conn = get_db_connection()
@@ -151,6 +210,13 @@ def fetch_and_store_interests(SUBurl, PROFurl, username):
             print(f"Added new user: {username}")
 
         user_id = user_id_row['id']
+
+        # Fetch start time
+        c.execute("SELECT start_time FROM settings LIMIT 1")
+        start_time_row = c.fetchone()
+        start_time = start_time_row['start_time'] if start_time_row else None
+        if start_time:
+            start_time = datetime.fromisoformat(start_time).timestamp()
 
         # Fetch submissions data
         response = requests.get(SUBurl)
@@ -180,6 +246,18 @@ def fetch_and_store_interests(SUBurl, PROFurl, username):
             if title is None or timestamp is None or lang is None:
                 continue
 
+            # Convert submission timestamp to a datetime object
+            try:
+                # If timestamp is Unix time
+                submission_time = float(timestamp)
+            except ValueError:
+                # Handle if timestamp is not in Unix time format
+                continue
+
+            # Discard submissions before the start time
+            if start_time and submission_time < start_time:
+                continue
+
             # Check if the submission already exists
             c.execute("SELECT * FROM submissions WHERE user_id=? AND title=? AND timestamp=? AND lang=?", 
                       (user_id, title, timestamp, lang))
@@ -202,5 +280,7 @@ def fetch_and_store_interests(SUBurl, PROFurl, username):
         conn.close()
     return new_submissions
 
+
 if __name__ == "__main__":
     app.run(debug=True)
+

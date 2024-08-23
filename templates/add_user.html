@@ -35,7 +35,7 @@
         }
 
         input[type="text"] {
-            width: 100%;
+            width: 93%;
             padding: 10px;
             border: 1px solid #333;
             border-radius: 5px;
@@ -62,7 +62,7 @@
 
         .message {
             color: #00FF00;
-            text-align: center;
+
         }
     </style>
 </head>
@@ -71,7 +71,7 @@
         <h1>Add User</h1>
         <form action="{{ url_for('add_user') }}" method="post">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" class="" id="username" name="username" required>
             <button type="submit">Add User</button>
         </form>
         {% if message %}

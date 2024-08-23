@@ -9,34 +9,46 @@
             background-color: #121212;
             color: #FFFFFF;
             font-family: Arial, sans-serif;
+            padding: 20px;
         }
 
         h1 {
             text-align: center;
         }
 
+        .container {
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            margin: auto;
+        }
+
         .user-list {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
             margin-top: 20px;
         }
 
-        .user-card {
-            display: flex;
-            align-items: center;
-            background-color: #1E1E1E;
-            padding: 10px 20px;
-            border-radius: 8px;
-            width: 60%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            text-decoration: none;
-            color: #FFFFFF;
-            transition: background-color 0.3s;
+        .user-list table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .user-card:hover {
+        .user-list th, .user-list td {
+            padding: 10px;
+            border: 1px solid #333;
+            text-align: left;
+        }
+
+        .user-list th {
+            background-color: #2E2E2E;
+        }
+
+        .user-list tr:nth-child(even) {
+            background-color: #1E1E1E;
+        }
+
+        .user-list tr:hover {
             background-color: #333333;
         }
 
@@ -44,85 +56,108 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            margin-right: 20px;
+            margin-right: 10px;
+            vertical-align: middle;
         }
 
         .username {
-            font-size: 1.2rem;
-            font-weight: bold;
+            vertical-align: middle;
         }
 
-        .submission-count {
-            margin-left: auto;
-            font-size: 1.2rem;
-            color: #AAAAAA;
-        }
-
-        .timer {
+        #countdown {
             text-align: center;
-            font-size: 1.2rem;
             margin-top: 20px;
+            font-size: 1.2rem;
+            color: #FFD700; /* Gold color */
         }
 
-        .add-user-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
+        .refresh-button {
+            display: block;
+            margin: 5px auto;
+            padding: 5px;
+            background-color: #28a745;
+            border: none;
             border-radius: 5px;
+            color: #FFFFFF;
             font-size: 1rem;
+            cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        .add-user-button:hover {
-            background-color: #0056b3;
+        .refresh-button:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Leaderboard</h1>
-        <a href="{{ url_for('add_user') }}" class="add-user-button">Add User</a>
-    </header>
-    <div class="user-list">
-        {% for user in users %}
-        <a class="user-card" href="{{ url_for('user_profile', username=user['username']) }}">
-            <img src="{{ user['avatar'] or url_for('static', filename='default-avatar.png') }}" alt="User Avatar">
-            <div class="username">{{ user['username'] }}</div>
-            <div class="submission-count">{{ user['submission_count'] }} submissions</div>
-        </a>
-        {% endfor %}
+    <h1>Leaderboard</h1>
+    <div class="container">
+        <div id="countdown"></div> <!-- Countdown timer display -->
+            <button class="refresh-button" onclick="window.location.href='{{ url_for('refresh_all_users') }}'">Refresh All Users</button>
+            <button class="refresh-button" onclick="window.location.href='{{ url_for('add_user') }}'">add User</button>
+        <div class="user-list">
+            <h2>Top Users</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Submission Count</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if users %}
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                <div class="user-card">
+                                    <img src="{{ user['avatar'] or url_for('static', filename='default-avatar.png') }}" alt="User Avatar">
+                                    <span class="username">{{ user['username'] }}</span>
+                                </div>
+                            </td>
+                            <td>{{ user['submission_count'] }}</td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3">No users found.</td>
+                        </tr>
+                    {% endif %}
+                    
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="timer">
-        <p>Competition ends in: <span id="countdown"></span></p>
-    </div>
+    <footer style="text-align: center; margin-top: 20px;">
+        <p>Made by Zanix</p>
+    </footer>
+
     <script>
-        // Countdown timer script
-        function updateCountdown(endTime) {
-            const countdownElement = document.getElementById('countdown');
-            const now = new Date().getTime();
-            const timeLeft = endTime - now;
-            if (timeLeft <= 0) {
-                countdownElement.innerHTML = 'Competition Ended';
-                return;
+        // Pass the end time from Flask to JavaScript
+        const endTime = new Date("{{ end_time }}"); // e.g., "2024-08-30T16:03"
+
+        function updateCountdown() {
+            const now = new Date();
+            const timeRemaining = endTime - now;
+
+            if (timeRemaining > 0) {
+                const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+                document.getElementById("countdown").innerHTML =
+                    `Competition ends in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } else {
+                document.getElementById("countdown").innerHTML = "Competition has ended!";
             }
-
-            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-            countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
 
-        // Replace this with the actual end time from the server
-        const endTime = new Date('{{ competition_end_time }}').getTime();
-        setInterval(() => updateCountdown(endTime), 1000);
+        setInterval(updateCountdown, 1000); // Update the countdown every second
+        updateCountdown(); // Initial call to display immediately
     </script>
-        <footer>
-            Made by Zanix
-        </footer>
 </body>
 </html>
