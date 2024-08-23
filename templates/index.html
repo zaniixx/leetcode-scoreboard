@@ -57,6 +57,28 @@
             font-size: 1.2rem;
             color: #AAAAAA;
         }
+
+        .timer {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        .add-user-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .add-user-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -73,5 +95,34 @@
         </a>
         {% endfor %}
     </div>
+    <div class="timer">
+        <p>Competition ends in: <span id="countdown"></span></p>
+    </div>
+    <script>
+        // Countdown timer script
+        function updateCountdown(endTime) {
+            const countdownElement = document.getElementById('countdown');
+            const now = new Date().getTime();
+            const timeLeft = endTime - now;
+            if (timeLeft <= 0) {
+                countdownElement.innerHTML = 'Competition Ended';
+                return;
+            }
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Replace this with the actual end time from the server
+        const endTime = new Date('{{ competition_end_time }}').getTime();
+        setInterval(() => updateCountdown(endTime), 1000);
+    </script>
+        <footer>
+            Made by Zanix
+        </footer>
 </body>
 </html>

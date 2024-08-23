@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add User</title>
+    <title>Admin Login</title>
     <style>
         body {
             background-color: #121212;
@@ -16,7 +16,7 @@
             margin: 0;
         }
 
-        .form-container {
+        .login-container {
             background-color: #1E1E1E;
             padding: 20px;
             border-radius: 8px;
@@ -34,7 +34,7 @@
             margin-bottom: 10px;
         }
 
-        input[type="text"] {
+        input[type="text"], input[type="password"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #333;
@@ -60,23 +60,28 @@
             background-color: #0056b3;
         }
 
-        .message {
-            color: #00FF00;
+        .error {
+            color: #FF6F6F;
+            margin-top: 10px;
             text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h1>Add User</h1>
-        <form action="{{ url_for('add_user') }}" method="post">
+    <div class="login-container">
+        <h1>Admin Login</h1>
+        <form action="{{ url_for('admin_login') }}" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
-            <button type="submit">Add User</button>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
         </form>
-        {% if message %}
-            <div class="message">{{ message }}</div>
-        {% endif %}
     </div>
 </body>
 </html>
