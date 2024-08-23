@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <p align="center">
   <img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" width="100" />
 </p>
@@ -20,6 +19,7 @@
 <p align="center">
 	<img src="https://img.shields.io/badge/HTML5-E34F26.svg?style=flat&logo=HTML5&logoColor=white" alt="HTML5">
 	<img src="https://img.shields.io/badge/YAML-CB171E.svg?style=flat&logo=YAML&logoColor=white" alt="YAML">
+	<img src="https://img.shields.io/badge/Gunicorn-499848.svg?style=flat&logo=Gunicorn&logoColor=white" alt="Gunicorn">
 	<img src="https://img.shields.io/badge/Python-3776AB.svg?style=flat&logo=Python&logoColor=white" alt="Python">
 	<img src="https://img.shields.io/badge/Flask-000000.svg?style=flat&logo=Flask&logoColor=white" alt="Flask">
 </p>
@@ -64,11 +64,13 @@ HTTP error 401 for prompt `features`
     ├── app.py
     ├── config.ini
     ├── docker-compose.yml
+    ├── dockerfile
     ├── leaderboard.db
     ├── models.py
     ├── old
     │   ├── DB_view.py
     │   └── update_scores.py
+    ├── readme
     ├── requirements.txt
     ├── secrets.ini
     ├── static
@@ -92,8 +94,10 @@ HTTP error 401 for prompt `features`
 | File                                                                                                    | Summary                                        |
 | ---                                                                                                     | ---                                            |
 | [docker-compose.yml](https://github.com/zaniixx/leetcode-scoreboard.git/blob/master/docker-compose.yml) | HTTP error 401 for prompt `docker-compose.yml` |
+| [dockerfile](https://github.com/zaniixx/leetcode-scoreboard.git/blob/master/dockerfile)                 | HTTP error 401 for prompt `dockerfile`         |
 | [update_DB.py](https://github.com/zaniixx/leetcode-scoreboard.git/blob/master/update_DB.py)             | HTTP error 401 for prompt `update_DB.py`       |
 | [models.py](https://github.com/zaniixx/leetcode-scoreboard.git/blob/master/models.py)                   | HTTP error 401 for prompt `models.py`          |
+| [readme](https://github.com/zaniixx/leetcode-scoreboard.git/blob/master/readme)                         | HTTP error 401 for prompt `readme`             |
 | [requirements.txt](https://github.com/zaniixx/leetcode-scoreboard.git/blob/master/requirements.txt)     | HTTP error 401 for prompt `requirements.txt`   |
 | [app.py](https://github.com/zaniixx/leetcode-scoreboard.git/blob/master/app.py)                         | HTTP error 401 for prompt `app.py`             |
 
@@ -135,35 +139,6 @@ Ensure you have the following dependencies installed on your system:
 1. Clone the leetcode-scoreboard repository:
 
 ```sh
-=======
-# LeetCode Scoreboard
-
-Welcome to the **LeetCode Scoreboard** repository! This project is a web application designed to track and display LeetCode submissions for a coding competition. Built with Flask, it offers an interactive and real-time leaderboard experience.
-
-## Features
-
-- **Real-Time Leaderboard:** Displays participants' progress in real-time.
-- **User Profiles:** View detailed profiles of users, including their submissions and avatars.
-- **Admin Dashboard:** Manage competition times, users, and submissions with ease.
-- **Competition Timing:** Set and manage start and end times for the competition.
-- **Data Management:** Option to delete all submissions from the database.
-
-## Tech Stack
-
-- **Backend:** Flask (Python)
-- **Frontend:** HTML, CSS, and JavaScript
-- **Database:** SQLite
-- **Web Server:** Nginx
-- **Containerization:** Docker
-
-## Getting Started
-
-To get started with this project, follow these steps:
-
-### 1. Clone the Repository
-
-```bash
->>>>>>> 23a3ad3209d432de6fd753aaa6fa6a26e3788a80
 git clone https://github.com/zaniixx/leetcode-scoreboard.git
 ```
 
@@ -187,7 +162,6 @@ Use the following command to run leetcode-scoreboard:
 > INSERT-RUN-COMMANDS
 ```
 
-<<<<<<< HEAD
 ###  Tests
 
 To execute tests, run:
@@ -256,7 +230,3 @@ This project is protected under the [SELECT-A-LICENSE](https://choosealicense.co
 [**Return**](#-quick-links)
 
 ---
-=======
-Contact
-For any questions or feedback, please contact me at your-email@example.com.
->>>>>>> 23a3ad3209d432de6fd753aaa6fa6a26e3788a80
