@@ -1,11 +1,14 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 import configparser
 from datetime import datetime
 import requests
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a secure secret key
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///app.db')
+db = SQLAlchemy(app)
 
 # Read config
 config = configparser.ConfigParser()

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    image: python:3.10-slim
+    container_name: flask_app
+    command: bash -c "pip install -r requirements.txt && flask run --host=0.0.0.0"
+    environment:
+      FLASK_APP: app.py
+      FLASK_ENV: development
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  db:
+    image: nouchka/sqlite3:latest
+    container_name: sqlite_db
+    command: ["tail", "-f", "/dev/null"]  # Prevents SQLite from exiting
+    volumes:
+      - sqlite_data:/var/lib/sqlite
+
+volumes:
+  sqlite_data:
