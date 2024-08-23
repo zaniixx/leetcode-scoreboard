@@ -1,0 +1,164 @@
+/* Light mode styles */
+body {
+    font-size: 62.5%;
+    box-sizing: border-box;
+    margin: 0;
+    background-color: #fbfaff;
+    color: #141a39;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+main {
+    width: 50rem;
+    background-color: #ffffff;
+    box-shadow: 0px 5px 15px 8px #e4e7fb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+#header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dark-mode-toggle {
+    background-color: #5c5be5;
+    border: 0;
+    border-radius: 2rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+}
+
+.dark-mode-toggle i {
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+h1 {
+    font-family: "Rubik", sans-serif;
+    font-size: 2rem;
+    color: #141a39;
+    margin: 0;
+}
+
+#leaderboard, #user-profile {
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #141a39;
+}
+
+thead {
+    background-color: #f1f1f1;
+}
+
+th, td {
+    padding: 1rem;
+    text-align: left;
+}
+
+tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+#buttons {
+    width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.exit, .continue {
+    width: 10rem;
+    height: 3rem;
+    font-family: "Rubik", sans-serif;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    border: 0;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+.exit {
+    background-color: #fff;
+    color: #7e7f86;
+}
+
+.exit:hover {
+    border: 0.1rem solid #5c5be5;
+}
+
+.continue {
+    background-color: #5c5be5;
+    color: #fff;
+}
+
+.continue:hover {
+    border-bottom: 0.2rem solid #3838b8;
+}
+
+.dark-mode {
+    background-color: #141a39;
+    color: #e4e7fb;
+}
+
+.dark-mode main {
+    background-color: #1e1e1e;
+    box-shadow: 0px 5px 15px 8px #333;
+}
+
+.dark-mode table {
+    color: #e4e7fb;
+}
+
+.dark-mode tr:nth-child(odd) {
+    background-color: #2e2e2e;
+}
+
+.dark-mode tr:hover {
+    background-color: #3c3c3c;
+}
+
+.dark-mode .dark-mode-toggle {
+    background-color: #e4e7fb;
+    color: #141a39;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+/* Existing styles... */
+
+.add-user-button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #5c5be5;
+    border: none;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.add-user-button:hover {
+    background-color: #3838b8;
+}

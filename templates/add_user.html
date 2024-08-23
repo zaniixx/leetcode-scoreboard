@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        input[type="submit"] {
+            background-color: #5C5BE5;
+            color: #FFFFFF;
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #3838B8;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <form action="{{ url_for('add_user') }}" method="POST">
+            <label for="username">Enter Username:</label>
+            <input type="text" id="username" name="username" required>
+            <input type="submit" value="Add User">
+        </form>
+    </div>
+</body>
+</html>

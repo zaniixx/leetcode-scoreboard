@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            background-color: #1E1E1E;
+            padding: 10px 20px;
+            border-radius: 8px;
+            width: 60%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            color: #FFFFFF;
+            transition: background-color 0.3s;
+        }
+
+        .user-card:hover {
+            background-color: #333333;
+        }
+
+        .user-card img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+
+        .username {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .submission-count {
+            margin-left: auto;
+            font-size: 1.2rem;
+            color: #AAAAAA;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Leaderboard</h1>
+        <a href="{{ url_for('add_user') }}" class="add-user-button">Add User</a>
+    </header>
+    <div class="user-list">
+        {% for user in users %}
+        <a class="user-card" href="{{ url_for('user_profile', username=user['username']) }}">
+            <img src="{{ user['avatar'] or url_for('static', filename='default-avatar.png') }}" alt="User Avatar">
+            <div class="username">{{ user['username'] }}</div>
+            <div class="submission-count">{{ user['submission_count'] }} submissions</div>
+        </a>
+        {% endfor %}
+    </div>
+</body>
+</html>
