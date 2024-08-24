@@ -7,6 +7,7 @@ from datetime import datetime
 import requests
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///app.db')
 db = SQLAlchemy(app)
 
@@ -285,5 +286,5 @@ def fetch_and_store_interests(SUBurl, PROFurl, username):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
 
