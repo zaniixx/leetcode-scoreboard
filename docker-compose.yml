@@ -1,29 +1,31 @@
 version: '3.8'
 
 services:
-  flask_app:
-    build: .
-    container_name: flask_app
-    command: gunicorn --bind 0.0.0.0:5000 wsgi:app
-    volumes:
-      - ./app:/app
+  flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Dockerfile for your Flask app
+    container_name: flask-app-docker
     ports:
-      - "5000:5000"
+      - "5000:5000"          # Flask app port
+    volumes:
+      - .:/app               # Mount the current directory inside the container for Flask
     environment:
-      - FLASK_ENV=development
+      - FLASK_APP=app.py     # Set the FLASK_APP environment variable to your main Flask app file
+      - FLASK_ENV=development # Set the environment to development
+    command: flask run --host=0.0.0.0
 
-  nginx:
-    image: nginx:latest
-    container_name: nginx_server
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+  alfa-leetcode-api:
+    build: .
+    container_name: alfa-leetcode-api-docker
     ports:
-      - "80:80"
-    depends_on:
-      - flask_app
-
-  sqlite_db:
-    image: nouchka/sqlite3
-    container_name: sqlite_db
+      - '3000:3000'
+    restart: always
+    environment:
+      - WDS_SOCKET_HOST=127.0.0.1 
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     volumes:
-      - ./data:/data
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
