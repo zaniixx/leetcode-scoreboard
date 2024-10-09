@@ -7,6 +7,7 @@ from datetime import datetime
 import requests
 
 app = Flask(__name__)
+app.secret_key= "key"
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///app.db')
 db = SQLAlchemy(app)
 
@@ -102,9 +103,11 @@ def set_end_time():
     conn.close()
     return redirect(admin_dashboard_route)
 
+@app.template_filter('to_datetime')
+def to_datetime_filter(timestamp, format='%Y-%m-%d %H:%M:%S'):
+    return datetime.utcfromtimestamp(timestamp).strftime(format)
 
-
-@app.route('/user/<username>', methods=['GET'])
+@app.route(user_profile_route, methods=['GET'])
 def user_profile(username):
     conn = get_db_connection()
     
@@ -114,6 +117,7 @@ def user_profile(username):
     
     if user is None:
         conn.close()
+        print(f"not User found: {user}")
         return "User not found", 404
 
     user_id = user['id']
@@ -124,7 +128,18 @@ def user_profile(username):
     FROM submissions
     WHERE user_id = ?
     """
+    print(f"User found: {user}")
     submissions = conn.execute(user_submissions_query, (user_id,)).fetchall()
+
+    formatted_submissions = []
+    for submission in submissions:
+        formatted_submission = {
+            'title': submission['title'],
+            'lang': submission['lang'],
+            'timestamp': datetime.fromtimestamp(submission['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
+        }
+        formatted_submissions.append(formatted_submission)
+
     conn.close()
     return render_template('user_profile.html', username=username, avatar=user['avatar'], submissions=submissions)
 

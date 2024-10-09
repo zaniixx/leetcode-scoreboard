@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='pizza.png') }}">
+
     <style>
         body {
             background-color: #121212;
@@ -87,6 +89,62 @@
         .refresh-button:hover {
             background-color: #0057b381;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            padding-top: 100px; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.8); 
+        }
+
+        .modal-content {
+            background-color: #1E1E1E;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            color: #FFD700;
+        }
+
+        .modal-content p {
+            color: #BBBBBB;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #FFFFFF;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .modal-content button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-close {
+            color: #FFFFFF;
+            font-size: 30px;
+            font-weight: bold;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -111,8 +169,9 @@
                         <tr>
                             <td>
                                 <div class="user-card">
-                                    <img src="{{ user['avatar'] or url_for('static', filename='default-avatar.png') }}" alt="User Avatar">
-                                    <span class="username">{{ user['username'] }}</span>
+                                    <a href="{{ url_for('user_profile', username=user['username']) }}">
+                                        <img src="{{ user['avatar'] or url_for('static', filename='default-avatar.png') }}" ></a>
+                                        <span class="username">{{ user['username'] }}</span>
                                 </div>
                             </td>
                             <td>{{ user['submission_count'] }}</td>
@@ -131,6 +190,17 @@
             </table>
         </div>
     </div>
+
+    <!-- Modal Window -->
+    <div id="disclaimerModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModal">&times;</span>
+            <h2>Website Under Development</h2>
+            <p>This website is currently a work in progress. Some features may not function as expected.</p>
+            <button id="closeButton">Okay, Got it!</button>
+        </div>
+    </div>
+
     <footer style="text-align: center; margin-top: 20px;">
         <p>Made by Zanix</p>
     </footer>
@@ -158,6 +228,33 @@
 
         setInterval(updateCountdown, 1000); // Update the countdown every second
         updateCountdown(); // Initial call to display immediately
+
+        // Modal JavaScript
+        var modal = document.getElementById("disclaimerModal");
+
+        // Show the modal when the page loads
+        window.onload = function() {
+            modal.style.display = "block";
+        };
+
+        // Get the elements that close the modal
+        var closeModal = document.getElementById("closeModal");
+        var closeButton = document.getElementById("closeButton");
+
+        // Close modal on button click
+        closeModal.onclick = function() {
+            modal.style.display = "none";
+        };
+        closeButton.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        // Close modal when clicking outside the modal
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
     </script>
 </body>
 </html>

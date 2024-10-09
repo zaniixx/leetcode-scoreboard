@@ -3,95 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>{{ username }}'s Profile</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='pizza.png') }}">
     <style>
         body {
             background-color: #121212;
             color: #FFFFFF;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
         }
 
-        h1 {
-            text-align: center;
-        }
-
-        .admin-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .action-button {
+        .profile-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
             background-color: #1E1E1E;
-            padding: 10px 20px;
             border-radius: 8px;
-            text-decoration: none;
-            color: #FFFFFF;
-            transition: background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
-        .action-button:hover {
-            background-color: #333333;
-        }
-
-        .user-list {
-            margin-top: 20px;
-            width: 80%;
-        }
-
-        .user-card {
-            background-color: #1E1E1E;
-            padding: 10px;
-            border-radius: 8px;
+        .profile-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: #FFFFFF;
+            margin-bottom: 20px;
         }
 
-        .user-card img {
-            width: 50px;
-            height: 50px;
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            margin-right: 10px;
+            margin-right: 20px;
+        }
+
+        .profile-info h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .profile-info p {
+            font-size: 1rem;
+            color: #BBBBBB;
+        }
+
+        .submissions-section {
+            margin-top: 40px;
+        }
+
+        .submissions-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .submission-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .submission-list li {
+            background-color: #2E2E2E;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .submission-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .submission-meta {
+            color: #BBBBBB;
+            font-size: 0.9rem;
+        }
+
+        .submission-meta .submission-time {
+            font-style: italic;
+        }
+
+        .no-submissions {
+            text-align: center;
+            color: #BBBBBB;
         }
 
         footer {
-            margin-top: 20px;
             text-align: center;
-            color: #AAAAAA;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #BBBBBB;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Admin Dashboard</h1>
-    </header>
-    <div class="admin-actions">
-        <form action="{{ url_for('set_end_time') }}" method="post">
-            <label for="end_time">Set Competition End Time:</label>
-            <input type="datetime-local" id="end_time" name="end_time" required>
-            <button type="submit" class="action-button">Set End Time</button>
-        </form>
-        <a href="{{ url_for('admin_logout') }}" class="action-button">Logout</a>
-    </div>
-    <div class="user-list">
-        <h2>Manage Users</h2>
-        {% for user in users %}
-        <div class="user-card">
-            <img src="{{ user['avatar'] or url_for('static', filename='default-avatar.png') }}" alt="User Avatar">
-            <span>{{ user['username'] }}</span>
-            <form action="{{ url_for('delete_user', user_id=user['id']) }}" method="post" style="margin: 0;">
-                <button type="submit" class="action-button">Delete User</button>
-            </form>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="{{ avatar or url_for('static', filename='default-avatar.png') }}" alt="User Avatar" class="profile-avatar">
+            <div class="profile-info">
+                <h1>{{ username }}</h1>
+                <p>{{ submissions|length }} Submissions</p>
+            </div>
         </div>
-        {% endfor %}
+
+        <div class="submissions-section">
+            <h2>Submissions</h2>
+            <ul class="submission-list">
+                {% if submissions %}
+                    {% for submission in submissions %}
+                    <li>
+                        <div class="submission-title">{{ submission.title }}</div>
+                        <div class="submission-meta">
+                            <span>{{ submission.lang }}</span> | 
+                            <span class="submission-time">Submitted on {{ submission.timestamp | to_datetime('%Y-%m-%d %H:%M:%S') }}</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <li class="no-submissions">No submissions found.</li>
+                {% endif %}
+            </ul>
+        </div>
     </div>
+
     <footer>
-        Made by Zanix
+        <p>Made by Zanix</p>
     </footer>
 </body>
 </html>
